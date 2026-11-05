@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "guiabiblioteca-unef",
     "public": "public",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "cleanUrls": false
