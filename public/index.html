@@ -151,7 +151,161 @@ body{padding-left:0!important}
  .tool-panel.assistant-panel.minimized{top:12px!important;right:12px!important;bottom:auto!important;left:auto!important;width:50px;height:50px;min-height:50px;max-height:50px;padding:0}
  .minimap-launcher{right:12px!important;bottom:12px!important;left:auto!important;top:auto!important;width:158px;padding:8px}
 }
-</style></head><body>
+</style><link rel="stylesheet" href="css/busca-ampliada.css">
+<style id="nino-assistant-integration">
+.tool-panel.assistant-panel{
+ position:fixed!important;top:auto!important;right:auto!important;
+ bottom:82px!important;left:18px!important;
+ width:min(370px,calc(100vw - 36px))!important;
+ max-height:min(72vh,650px)!important;overflow:auto!important;
+ border:2px solid #f2a05c!important;border-radius:19px!important;
+ background:#fffaf5!important;color:#57301b!important;
+ box-shadow:0 15px 42px #6f351e30!important;
+}
+.assistant-panel .tool-heading{
+ display:flex!important;align-items:center!important;gap:9px!important;
+ color:#78370f!important;font-size:16px!important;
+}
+.nino-assistant-avatar{
+ width:39px;height:37px;flex:0 0 39px;position:relative;
+ display:inline-flex;align-items:center;justify-content:center;
+ border:2px solid #df681d;border-radius:12px 12px 10px 10px;
+ background:linear-gradient(145deg,#fff,#fff0df);
+ box-shadow:inset 0 -4px 0 #f5b17f,0 2px 5px #a94b1d20;
+}
+.nino-assistant-avatar:before{
+ content:"";position:absolute;width:24px;height:13px;top:10px;
+ border:1px solid #c85c1c;border-radius:6px;background:#4b2b20;
+}
+.nino-assistant-avatar i{
+ position:relative;z-index:1;width:4px;height:5px;
+ margin:0 3px;border-radius:4px;background:#fff2d9;
+}
+.assistant-panel .tool-heading:after{display:none!important;content:none!important}
+.assistant-collapse{
+ border-color:#f1c29e!important;background:#fff4e9!important;
+ color:#a94d18!important;
+}
+.assistant-panel .assistant-submit{
+ background:#e97525!important;color:white!important;
+ border-color:#e97525!important;
+}
+.assistant-panel .assistant-input{
+ border-color:#edc5a5!important;border-radius:10px!important;
+}
+.assistant-panel .assistant-note{
+ color:#754a30!important;background:#fff4e9!important;
+ border:1px solid #f2d7c3!important;border-radius:10px!important;
+ padding:9px!important;
+}
+.assistant-panel .assistant-go{
+ border:1px solid #f0d5bf!important;border-radius:10px!important;
+ background:#fff!important;color:#57301b!important;
+}
+.assistant-panel .assistant-go strong{color:#78370f!important}
+.assistant-panel.minimized{
+ left:18px!important;right:auto!important;bottom:18px!important;
+ top:auto!important;width:58px!important;height:58px!important;
+ min-height:58px!important;max-height:58px!important;
+ padding:0!important;border:2px solid #f2a05c!important;
+ border-radius:17px!important;background:#fffaf5!important;
+}
+.assistant-panel.minimized .tool-heading:before{
+ content:"";display:block;width:39px;height:37px;
+ border:2px solid #df681d;border-radius:12px 12px 10px 10px;
+ background:linear-gradient(145deg,#fff,#fff0df);
+ box-shadow:inset 0 -4px 0 #f5b17f;
+}
+.assistant-panel.minimized .tool-heading:after{
+ content:"••"!important;display:block!important;position:absolute;
+ left:19px;top:20px;width:20px;height:10px;
+ color:#fff2d9;font:700 12px/10px Arial,sans-serif;
+ letter-spacing:3px;text-shadow:0 0 2px #fff;
+}
+.unef-external-results{
+ display:grid;gap:8px;margin-top:12px;padding-top:10px;
+ border-top:1px solid #f0d5bf;
+}
+.unef-external-heading{margin:0;color:#914316;font-size:14px}
+.unef-external-card{
+ padding:10px;border:1px solid #f0d5bf;border-radius:11px;
+ background:#fff;color:#57301b;font-size:12px;line-height:1.45;
+}
+.unef-external-card h4{margin:5px 0;color:#78370f;font-size:13px}
+.unef-external-card p{margin:3px 0}
+.unef-source-label{color:#a6531c;font-size:10px;font-weight:700}
+.unef-availability{display:block;margin-top:5px;color:#79563e}
+.unef-external-link{display:inline-block;margin-top:7px;color:#a94d18;font-weight:700}
+.unef-external-actions{display:flex;flex-wrap:wrap;gap:7px}
+.unef-external-button{
+ padding:7px 9px;border:1px solid #edc29e;border-radius:8px;
+ background:#fff4e9;color:#914316;font-size:11px;text-decoration:none;
+}
+.unef-external-empty,.unef-external-error{
+ padding:9px;border-radius:9px;background:#fff4e9;
+ color:#754a30;font-size:12px;
+}
+@media(max-width:600px){
+ .tool-panel.assistant-panel{
+  left:8px!important;right:8px!important;bottom:70px!important;
+  top:auto!important;width:auto!important;max-height:68vh!important;
+ }
+ .assistant-panel.minimized{
+  left:9px!important;right:auto!important;bottom:10px!important;
+  top:auto!important;width:52px!important;height:52px!important;
+  min-height:52px!important;max-height:52px!important;
+ }
+}
+
+
+/* UNEF-CORRECAO-PESQUISA-CATALOGO-NINO */
+.nino-assistant-avatar {
+  animation: ninoMovimento 3.2s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+.nino-assistant-avatar i {
+  display: block !important;
+  animation: ninoPiscada 4s infinite;
+  transform-origin: center;
+}
+.nino-assistant-avatar i:nth-child(2) {
+  animation-delay: .08s;
+}
+.assistant-panel.minimized .tool-heading {
+  position: relative !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  gap: 0 !important;
+}
+.assistant-panel.minimized .tool-heading:before,
+.assistant-panel.minimized .tool-heading:after {
+  content: none !important;
+  display: none !important;
+}
+.assistant-panel.minimized .nino-assistant-avatar {
+  display: inline-flex !important;
+  flex: 0 0 39px !important;
+  width: 39px !important;
+  height: 37px !important;
+  margin: 0 !important;
+}
+@keyframes ninoMovimento {
+  0%, 85%, 100% { transform: translateY(0) rotate(0); }
+  90% { transform: translateY(-2px) rotate(-4deg); }
+  95% { transform: translateY(0) rotate(4deg); }
+}
+@keyframes ninoPiscada {
+  0%, 43%, 47%, 100% { transform: scaleY(1); }
+  45% { transform: scaleY(.12); }
+}
+</style>
+
+</head><body>
 <div class="unef-motion-bg" aria-hidden="true"><img class="unef-motion-mark" alt=""><img class="unef-motion-mark" alt=""><img class="unef-motion-mark" alt=""></div>
 
 <div id="welcomeShade" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" aria-describedby="welcomeText">
@@ -169,7 +323,7 @@ body{padding-left:0!important}
 <section class="view active" id="catalogView"><main class="catalog-content"><div class="search-wrap"><span class="search-icon">🔍</span><input id="catalogSearch" class="search-input" type="text" placeholder="Ex: direito civil, anatomia, 616.5..." aria-label="Buscar matéria ou número do livro"><button id="catalogClear" class="clear" style="display:none" aria-label="Limpar busca">✕</button></div><div class="discovery-tools" aria-label="Recursos de pesquisa">
 <section class="tool-panel" aria-labelledby="recentHeading"><h2 class="tool-heading" id="recentHeading">🕘 Pesquisas recentes</h2><p class="tool-sub">Continue de onde parou neste dispositivo.</p><div id="recentSearches" class="recent-list"><div class="recent-empty">Suas pesquisas aparecerão aqui.</div></div></section>
 <section class="tool-panel guide-panel" aria-labelledby="guidesHeading"><details class="guide-disclosure" id="studyGuidesDisclosure"><summary><span class="tool-heading" id="guidesHeading" style="margin:0">🎓 Guias de estudo por disciplina</span></summary><div class="guide-inner"><p class="tool-sub">Escolha uma área para encontrar assuntos e estantes relacionados.</p><div id="studyGuides" class="guide-list"></div></div></details></section>
-<section class="tool-panel assistant-panel" id="assistantPanel" aria-labelledby="assistantHeading"><h2 class="tool-heading" id="assistantHeading" title="Recolher ou expandir o assistente">✨ Assistente de pesquisa<button type="button" class="assistant-collapse" id="assistantCollapse" aria-label="Recolher assistente de pesquisa" title="Recolher">−</button></h2><p class="tool-sub">Conte o que você precisa estudar, mesmo sem saber o título de um livro. Ex.: “preciso estudar psicologia infantil”.</p><form id="assistantForm" class="assistant-form"><input id="assistantInput" class="assistant-input" type="search" placeholder="O que você precisa estudar?" aria-label="Descreva o assunto que deseja pesquisar"><button class="assistant-submit" type="submit">Buscar</button></form><div id="assistantResults" class="assistant-results" aria-live="polite"></div></section>
+<section class="tool-panel assistant-panel" id="assistantPanel" aria-labelledby="assistantHeading"><h2 class="tool-heading" id="assistantHeading" title="Recolher ou expandir o assistente"><span class="nino-assistant-avatar" aria-hidden="true"><i></i><i></i></span> Nino · Pesquisa da Biblioteca<button type="button" class="assistant-collapse" id="assistantCollapse" aria-label="Recolher assistente de pesquisa" title="Recolher">−</button></h2><p class="tool-sub">Conte o que você precisa estudar, mesmo sem saber o título de um livro. Ex.: “preciso estudar psicologia infantil”.</p><form id="assistantForm" class="assistant-form"><input id="assistantInput" class="assistant-input" type="search" placeholder="O que você precisa estudar?" aria-label="Descreva o assunto que deseja pesquisar"><button class="assistant-submit" type="submit">Buscar</button></form><div id="assistantResults" class="assistant-results" aria-live="polite"></div></section>
 </div><div id="catalogResults"></div></main></section>
 <section class="view" id="mapView" aria-label="Planta interativa para consulta"><div class="map-wrap"><button type="button" class="map-close" id="mapClose" aria-label="Fechar planta">×</button><iframe id="mapFrame" class="map-frame" title="Planta interativa da biblioteca" loading="eager"></iframe></div><p class="map-note">Explore a planta, selecione uma estante e consulte os assuntos relacionados. O modo de edição administrativa está desativado nesta versão pública.</p></section>
 
@@ -415,20 +569,66 @@ function correctPhrase(term){
  }).join('');
 }
 function suggestCorrection(term){const fixed=correctPhrase(term);return normalizar(fixed)!==normalizar(term)?fixed:null}
-function runAssistant(term,skipCorrection=false){
- const original=String(term||'').trim(),root=$('assistantResults');root.innerHTML='';if(!original){root.innerHTML='<div class="assistant-note">Digite um tema, disciplina ou conceito para começar.</div>';return}
- const correction=!skipCorrection?suggestCorrection(original):null;
- const effectiveQuery=correction||original, q=normalizar(effectiveQuery);
- if(correction&&normalizar(correction)!==normalizar(original)){const box=document.createElement('div');box.className='assistant-correct';const label=document.createElement('span');label.className='correct-label';label.textContent='Ajustamos possíveis erros de escrita para melhorar a busca.';const text=document.createElement('span');text.textContent='Você quis dizer: ';const btn=document.createElement('button');btn.type='button';btn.textContent=correction+'?';btn.onclick=()=>{$('assistantInput').value=correction;runAssistant(correction,true)};box.append(label,text,btn);root.append(box)}
- saveRecent(effectiveQuery,'assistente');const words=q.split(/[^a-z0-9]+/).filter(w=>w.length>2&&!stopWords.has(w));const scored=estantes.map(e=>{const hits=e.materias.map(m=>({m,score:normalizar(m).includes(q)||q.includes(normalizar(m))?5:words.reduce((n,w)=>n+(normalizar(m).includes(w)?1:0),0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);const score=hits.reduce((n,x)=>n+x.score,0);return {e,hits,score}}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
- if(!scored.length){const p=document.createElement('div');p.className='assistant-note';p.textContent='Não encontrei uma correspondência direta nos assuntos cadastrados, mesmo após verificar possíveis erros de escrita. Tente um termo mais amplo, como “saúde”, “direito”, “administração” ou “anatomia”.';root.append(p);return}
- const intro=document.createElement('div');intro.className='assistant-note';intro.textContent='Sugestões com base nos assuntos cadastrados no catálogo (não são recomendações de títulos individuais):';root.append(intro);
- scored.slice(0,5).forEach(({e,hits})=>{const b=document.createElement('button');b.type='button';b.className='assistant-go';const strong=document.createElement('strong');strong.textContent='Estante '+e.num+' · '+(e.range||'TCC');const small=document.createElement('small');small.textContent='Assuntos relacionados: '+hits.slice(0,4).map(x=>x.m).join(', ');b.append(strong,small);b.onclick=()=>{saveRecent('Estante '+e.num,'estante');jumpToMap(e.num)};root.append(b)});
+async function runAssistant(term){
+ const original=String(term||'').trim(),root=$('assistantResults');
+ root.innerHTML='';
+ if(!original){
+  root.innerHTML='<div class="assistant-note">Digite um tema, disciplina ou conceito para começar.</div>';
+  return;
+ }
+ const q=normalizar(original);
+ saveRecent(original,'assistente');
+ const words=q.split(/[^a-z0-9]+/).filter(w=>w.length>2&&!stopWords.has(w));
+ const scored=estantes.map(e=>{
+  const hits=e.materias.map(m=>({
+   m,
+   score:normalizar(m).includes(q)||q.includes(normalizar(m))
+    ?5
+    :words.reduce((n,w)=>n+(normalizar(m).includes(w)?1:0),0)
+  })).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+  const score=hits.reduce((n,x)=>n+x.score,0);
+  return {e,hits,score};
+ }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+
+ if(!scored.length){
+  const p=document.createElement('div');
+  p.className='assistant-note';
+  p.textContent='Não encontrei esse assunto diretamente no catálogo da Biblioteca UNEF. Vou procurar também em fontes externas.';
+  root.append(p);
+
+  if(window.UNEFBuscaAmpliada && typeof window.UNEFBuscaAmpliada.pesquisar==='function'){
+   await window.UNEFBuscaAmpliada.pesquisar(original,'#assistantResults');
+  }else{
+   const aviso=document.createElement('div');
+   aviso.className='assistant-note';
+   aviso.textContent='A pesquisa externa não está disponível neste momento. Verifique se os módulos de pesquisa foram carregados.';
+   root.append(aviso);
+  }
+  return;
+ }
+
+ const intro=document.createElement('div');
+ intro.className='assistant-note';
+ intro.textContent='Encontrei assuntos relacionados no catálogo da Biblioteca UNEF:';
+ root.append(intro);
+
+ scored.slice(0,5).forEach(({e,hits})=>{
+  const b=document.createElement('button');
+  b.type='button';
+  b.className='assistant-go';
+  const strong=document.createElement('strong');
+  strong.textContent='Estante '+e.num+' · '+(e.range||'TCC');
+  const small=document.createElement('small');
+  small.textContent='Assuntos relacionados: '+hits.slice(0,4).map(x=>x.m).join(', ');
+  b.append(strong,small);
+  b.onclick=()=>{saveRecent('Estante '+e.num,'estante');jumpToMap(e.num)};
+  root.append(b);
+ });
 }
 $('assistantForm').addEventListener('submit',e=>{e.preventDefault();runAssistant($('assistantInput').value)});
-function correctCatalogSearch(){const field=$('catalogSearch'),raw=field.value.trim();if(raw.length<3)return raw;const fixed=correctPhrase(raw);if(fixed&&normalizar(fixed)!==normalizar(raw)){field.value=fixed;query=fixed;selectedShelf=null;$('catalogClear').style.display='block';render();const note=document.createElement('div');note.className='assistant-correct';note.textContent='Busca corrigida automaticamente: '+fixed;const root=$('catalogResults');root.prepend(note);return fixed}return raw}
-$('catalogSearch').addEventListener('keydown',e=>{if(e.key==='Enter'&&$('catalogSearch').value.trim().length>1){const term=correctCatalogSearch();saveRecent(term,'assunto')}});
-$('catalogSearch').addEventListener('change',e=>{if(e.target.value.trim().length>1){const term=correctCatalogSearch();saveRecent(term,'assunto')}});
+
+$('catalogSearch').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.value.trim().length>1)saveRecent(e.target.value.trim(),'assunto')});
+$('catalogSearch').addEventListener('change',e=>{if(e.target.value.trim().length>1)saveRecent(e.target.value.trim(),'assunto')});
 renderRecent();renderGuides();
 const guideDisclosure=$('studyGuidesDisclosure');if(guideDisclosure){guideDisclosure.addEventListener('toggle',()=>{guideDisclosure.setAttribute('aria-expanded',String(guideDisclosure.open));});}
 // Assistente fixo no canto superior direito: somente recolher/expandir, sem arrastar.
@@ -475,5 +675,55 @@ render();
 </script>
 
 
+
+<script src="js/fontes-externas.js"></script>
+<script src="js/busca-ampliada.js"></script>
+
+
+<script>
+/* UNEF-CORRECAO-PESQUISA-CATALOGO-NINO */
+(function () {
+  const campo = document.getElementById('catalogSearch');
+  if (!campo) return;
+
+  let ultimaBusca = '';
+
+  async function pesquisarTambemForaDaBiblioteca() {
+    const termo = campo.value.trim();
+    if (termo.length < 2 || termo === ultimaBusca) return;
+
+    if (!window.UNEFBuscaAmpliada ||
+        typeof window.UNEFBuscaAmpliada.pesquisar !== 'function') {
+      console.warn('A pesquisa externa ainda não está disponível.');
+      return;
+    }
+
+    ultimaBusca = termo;
+
+    try {
+      await window.UNEFBuscaAmpliada.pesquisar(
+        termo,
+        '#catalogResults'
+      );
+    } catch (erro) {
+      console.error('Erro na pesquisa externa do catálogo:', erro);
+    }
+  }
+
+  campo.addEventListener('input', function () {
+    ultimaBusca = '';
+  });
+
+  campo.addEventListener('keydown', function (evento) {
+    if (evento.key === 'Enter') {
+      setTimeout(pesquisarTambemForaDaBiblioteca, 50);
+    }
+  });
+
+  campo.addEventListener('change', function () {
+    setTimeout(pesquisarTambemForaDaBiblioteca, 50);
+  });
+})();
+</script>
 
 </body></html>
