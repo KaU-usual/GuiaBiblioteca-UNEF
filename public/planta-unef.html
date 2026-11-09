@@ -14,7 +14,7 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Source Sans 3",system-ui,sans-serif}
-main{max-width:1180px;margin:0 auto;padding:18px 14px 28px}
+main{width:100%;max-width:1180px;height:100vh;height:100dvh;min-height:0;margin:0 auto;padding:12px 14px;display:flex;flex-direction:column;overflow:hidden}
 header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between;margin-bottom:12px}
 .brand{display:flex;align-items:center;gap:12px}
 .logo{background:var(--ac);color:#fff;font:700 15px "Bricolage Grotesque",system-ui,sans-serif;padding:7px 11px;border-radius:8px;letter-spacing:.04em}
@@ -34,9 +34,18 @@ h1{font:700 clamp(22px,4.5vw,30px)/1.1 "Bricolage Grotesque",system-ui,sans-seri
 .props label{font-size:13px;color:var(--mute);display:flex;align-items:center;gap:4px}
 .in{width:76px;padding:6px 8px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
 .in.t{width:150px}
-.mapwrap{max-width:900px;margin:0 auto;background:#f4f5f7;border:1px solid var(--line);border-radius:14px;padding:8px;overflow-x:auto}
-svg{display:block;width:100%;min-width:760px;height:auto}
+.mapwrap{width:100%;max-width:1180px;min-height:0;flex:1 1 0;margin:0 auto;background:#f4f5f7;border:1px solid var(--line);border-radius:14px;padding:8px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+svg{display:block;width:100%;height:100%;min-width:0;min-height:0;flex:1 1 auto;touch-action:none;cursor:grab}
 .editing svg{touch-action:none}
+
+.map-controls{position:sticky;bottom:12px;display:flex;justify-content:flex-end;gap:9px;
+max-width:900px;margin:-58px auto 14px;padding:0 14px;z-index:5;pointer-events:none}
+.map-controls button{pointer-events:auto;width:44px;height:44px;border:1px solid #d9dde1;
+border-radius:12px;background:#fff;color:#27323b;font-size:25px;font-weight:700;
+box-shadow:0 3px 12px #0002;cursor:pointer}
+.map-controls button:active{transform:scale(.94)}
+@media(max-width:600px){.map-controls{bottom:10px}.map-controls button{width:42px;height:42px}}
+
 .it{cursor:default}.shelf{cursor:pointer}
 .editing .it{cursor:move}
 .hd{fill:#fff;stroke:var(--blue);stroke-width:3;cursor:nwse-resize}
@@ -102,7 +111,22 @@ textarea{width:100%;height:240px;margin-top:10px;font:13px/1.35 ui-monospace,Men
 .editing .obj{transform:none!important;filter:none!important}
 #tip{position:fixed;pointer-events:none;opacity:0;transition:opacity .15s;background:#1c1f22;color:#fff;padding:7px 11px;border-radius:9px;font-size:13px;z-index:20;display:flex;flex-direction:column;box-shadow:0 6px 18px rgba(0,0,0,.3)}
 #tip span{color:#9be36a;font:12px ui-monospace,Menlo,monospace}
-</style>
+
+/* POSICAO DOS CONTROLES V2 */
+.map-controls{
+ position:static;
+ display:flex;
+ justify-content:flex-end;
+ gap:9px;
+ max-width:900px;
+ margin:0 auto 8px;
+ padding:0 8px;
+ pointer-events:auto;
+}
+
+/* ENQUADRAMENTO RESPONSIVO V3 */
+header,.info,.map-controls,.legend{flex-shrink:0}
+@media(max-width:600px){main{padding:8px 8px 10px}.mapwrap{padding:4px;min-height:0}}\n</style>
 </head>
 <body>
 <main>
@@ -118,7 +142,14 @@ textarea{width:100%;height:240px;margin-top:10px;font:13px/1.35 ui-monospace,Men
 <div class="props"><label><input type="checkbox" id="sp" checked> Alinhar à grade</label><button class="b" id="sv">Salvar neste navegador</button><button class="b" id="ex">Exportar / importar</button><button class="b dg" id="rs">Restaurar original</button><span id="st" style="color:var(--mute);font-size:14px"></span></div>
 </div>
 <div class="info" id="info">Toque em uma estante para ver os assuntos.</div>
+<div class="map-controls" id="mapControls" aria-label="Controles de zoom">
+<button type="button" id="zoomIn" aria-label="Aumentar zoom">+</button>
+<button type="button" id="zoomOut" aria-label="Diminuir zoom">−</button>
+<button type="button" id="mapReset" aria-label="Centralizar planta">⌖</button>
+</div>
+
 <div class="mapwrap"><svg id="map" viewBox="628 -32 1024 1064" role="group" aria-label="Planta da biblioteca"></svg></div>
+
 <div class="legend"><span>Estantes 10 a 18: coluna da esquerda</span><span>Estantes 1 a 9: coluna da direita</span><span>Computadores: parede direita</span></div>
 </main>
 <div class="ov" id="ov" role="dialog" aria-modal="true" aria-labelledby="pt"><div class="pnl"><div class="ph"><h2 id="pt"></h2><span class="rgm" id="rg"></span><button class="x" id="cl" aria-label="Fechar">×</button></div><div class="lst" id="case"></div><div class="ft"><p class="note" id="nt"></p><div class="nav"><button class="b nv" id="pv"></button><button class="b nv" id="nx"></button></div></div></div></div>
@@ -214,11 +245,40 @@ const PAL=['#1f3a5f','#2f6f4f','#c2542d','#e8b83a','#efe9dc','#a63a3a','#2d5a7b'
 function cluster(seed){const r=rng(seed);let x=3,o='';const c=6+(r()*3|0);for(let i=0;i<c;i++){const w=7+(r()*4|0),h=18+(r()*22|0),col=PAL[r()*PAL.length|0],tilt=i===c-1&&r()>.5;
  o+=`<g class="bk" style="--i:${i}"><g${tilt?` transform="rotate(-13 ${x+w} 43)"`:''}><rect x="${x}" y="${43-h}" width="${w}" height="${h}" rx="1.5" fill="${col}"/><rect x="${x}" y="${43-h}" width="1.8" height="${h}" fill="#fff" fill-opacity=".22"/><rect x="${x}" y="${43-h+6}" width="${w}" height="1.6" fill="#fff" fill-opacity=".6"/><rect x="${x}" y="${43-h+10}" width="${w}" height="1.1" fill="#fff" fill-opacity=".35"/></g></g>`;x+=w+1}
  return `<svg class="cl" viewBox="0 0 100 44" width="96" height="44" aria-hidden="true">${o}</svg>`}
-const VB0=[628,-32,1024,1064];let vb=VB0.slice(),af=0;
+const SCENE={x:640,y:-20,w:960,h:1040};
+const svgAspect=()=>svg.clientWidth/Math.max(1,svg.clientHeight);
+function fitScene(){
+ const a=svgAspect(),pad=35;
+ let w=SCENE.w+pad*2,h=SCENE.h+pad*2;
+ if(w/h<a)w=h*a;else h=w/a;
+ return [SCENE.x+SCENE.w/2-w/2,SCENE.y+SCENE.h/2-h/2,w,h];
+}
+const VB0=fitScene();let vb=VB0.slice(),af=0;
+
 const setVB=v=>{vb=v;svg.setAttribute('viewBox',v.map(x=>+x.toFixed(2)).join(' '))};
-function zvb(n){const it=items.find(i=>i.t==='shelf'&&i.n===n);if(!it)return VB0.slice();const W=640,H=W*VB0[3]/VB0[2];return[it.x+it.w/2-W/2,it.y+it.h/2-H/2,W,H]}
+const ajustarEnquadramento=()=>{
+ cancelAnimationFrame(af);
+ if($('#ov').classList.contains('on')&&cur)setVB(zvb(cur));
+ else setVB(fitScene());
+};
+window.addEventListener('resize',ajustarEnquadramento);
+if('ResizeObserver' in window){
+ new ResizeObserver(ajustarEnquadramento).observe($('.mapwrap'));
+}
+
+function zvb(n){const it=items.find(i=>i.t==='shelf'&&i.n===n);if(!it)return VB0.slice();const W=640,H=W/svgAspect();return[it.x+it.w/2-W/2,it.y+it.h/2-H/2,W,H]}
 function anim(to,ms,cb,delay=0){cancelAnimationFrame(af);const from=vb.slice();if(matchMedia('(prefers-reduced-motion:reduce)').matches){setVB(to);cb&&cb();return}
  const t0=performance.now()+delay,ease=x=>x<.5?16*x*x*x*x*x:1-Math.pow(-2*x+2,5)/2,step=q=>{if(q<t0){af=requestAnimationFrame(step);return}const k=Math.min(1,(q-t0)/ms),e=ease(k);setVB(from.map((v,i)=>v+(to[i]-v)*e));if(k<1)af=requestAnimationFrame(step);else cb&&cb()};af=requestAnimationFrame(step)}
+
+function zoomManual(fator){
+ const cx=vb[0]+vb[2]/2,cy=vb[1]+vb[3]/2;
+ const w=Math.max(300,Math.min(2200,vb[2]*fator));
+ const h=w/svgAspect();
+ anim([cx-w/2,cy-h/2,w,h],250);
+}
+$('#zoomIn').onclick=()=>zoomManual(.8);
+$('#zoomOut').onclick=()=>zoomManual(1.25);
+$('#mapReset').onclick=()=>anim(fitScene(),350);
 function zoomOpen(n){if(edit)return;$('#tip').style.opacity=0;anim(zvb(n),900,()=>open(n),90)}
 function open(n){cur=n;const d=D[n];setVB(zvb(n));$('#pt').textContent='Estante '+n;$('#rg').textContent=d.r;
  $('#case').innerHTML=d.s.map((s,i)=>`<button class="r${term&&norm(s).includes(term)?' hl':''}">${cluster(n*31+i)}<div class="tx"><div class="cd">Estante ${n} · ${String(i+1).padStart(2,'0')}</div><div class="tt">${esc(s)}</div></div></button>`).join('');
@@ -226,9 +286,43 @@ function open(n){cur=n;const d=D[n];setVB(zvb(n));$('#pt').textContent='Estante 
  $('#pv').textContent=n>1?'← Estante '+(n-1):'';$('#pv').disabled=n<=1;$('#nx').textContent=n<18?'Estante '+(n+1)+' →':'';$('#nx').disabled=n>=18;
  const o=$('#ov');o.classList.remove('on');void o.offsetWidth;o.classList.add('on');$('#cl').focus();try{history.replaceState(null,'','#estante-'+n)}catch(e){}}
 $('#case').addEventListener('click',e=>{const b=e.target.closest('.r');if(b){document.querySelectorAll('#case .r').forEach(x=>x.classList.remove('sel'));b.classList.add('sel')}});
-function close(){$('#ov').classList.remove('on');try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}anim(VB0.slice(),700,()=>{const g=document.querySelector(`.shelf[data-n="${cur}"]`);g&&g.focus({preventScroll:true})})}
+function close(){$('#ov').classList.remove('on');try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}anim(fitScene(),700,()=>{const g=document.querySelector(`.shelf[data-n="${cur}"]`);g&&g.focus({preventScroll:true})})}
 $('#cl').onclick=close;$('#ov').onclick=e=>{if(e.target.id=='ov')close()};$('#pv').onclick=()=>open(cur-1);$('#nx').onclick=()=>open(cur+1);
-svg.addEventListener('click',e=>{if(edit)return;const g=e.target.closest('.shelf');g&&zoomOpen(+g.dataset.n)});
+
+/* ARRASTAR MAPA - CONSULTA */
+let pan=null,bloquearCliqueAte=0;
+svg.addEventListener('pointerdown',e=>{
+ if(edit||e.button!==0)return;
+ pan={x:e.clientX,y:e.clientY,vb:vb.slice(),moved:false};
+});
+window.addEventListener('pointermove',e=>{
+ if(!pan||edit)return;
+ const dx=e.clientX-pan.x,dy=e.clientY-pan.y;
+ if(!pan.moved&&Math.hypot(dx,dy)<5)return;
+ pan.moved=true;
+ const w=svg.clientWidth,h=svg.clientHeight;
+ if(!w||!h)return;
+ setVB([
+  pan.vb[0]-dx*pan.vb[2]/w,
+  pan.vb[1]-dy*pan.vb[3]/h,
+  pan.vb[2],pan.vb[3]
+ ]);
+ e.preventDefault();
+},{passive:false});
+window.addEventListener('pointerup',()=>{
+ if(!pan)return;
+ if(pan.moved)bloquearCliqueAte=performance.now()+350;
+ pan=null;
+});
+window.addEventListener('pointercancel',()=>{pan=null});
+
+svg.addEventListener('click',e=>{
+ if(edit)return;
+ if(performance.now()<bloquearCliqueAte){e.preventDefault();e.stopPropagation();return}
+ const g=e.target.closest('.shelf');
+ g&&zoomOpen(+g.dataset.n);
+});
+
 svg.addEventListener('mousemove',e=>{const tp=$('#tip'),g=!edit&&e.target.closest('.shelf');if(!g){tp.style.opacity=0;return}const n=+g.dataset.n;tp.innerHTML=`<b>Estante ${n}</b><span>${esc(D[n].r)} · ${D[n].s.length} assuntos</span>`;tp.style.opacity=1;tp.style.left=Math.min(e.clientX+16,innerWidth-250)+'px';tp.style.top=e.clientY+16+'px'});
 svg.addEventListener('mouseleave',()=>{$('#tip').style.opacity=0});
 svg.addEventListener('keydown',e=>{if(edit)return;const g=e.target.closest('.shelf');if(g&&(e.key=='Enter'||e.key==' ')){e.preventDefault();zoomOpen(+g.dataset.n)}});

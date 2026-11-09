@@ -6,12 +6,12 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**",
-      "index-antes-redesign.html",
-      "index-integracao-nino-teste.html",
-      "index-novo-nino.html",
-      "index.html.backup-navegacao",
-      "nino-unef-versao-correta-para-site.html",
-      "index.html.backup-antes-nino-minimapa"
+      "**/*.bak*",
+      "**/*backup*",
+      "**/index-antes-*.html",
+      "**/index-*-teste.html",
+      "**/index-novo-*.html",
+      "**/nino-unef-versao-correta-para-site.html"
     ],
     "cleanUrls": false
   }
