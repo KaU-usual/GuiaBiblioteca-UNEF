@@ -1,1 +1,4 @@
 .firebase/
+
+# Backups locais do projeto UNEF
+/backups/

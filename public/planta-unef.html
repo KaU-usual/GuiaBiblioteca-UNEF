@@ -64,11 +64,11 @@ box-shadow:0 3px 12px #0002;cursor:pointer}
 .tg{fill:#fffaf1;fill-opacity:.98;stroke:#d88a2b;stroke-width:1.7;filter:drop-shadow(0 2px 3px rgba(20,28,35,.25))}
 .tgt{fill:#303a42;font-family:"Source Sans 3",system-ui,sans-serif;font-weight:800;letter-spacing:.5px;text-anchor:middle;pointer-events:none}
 .legend{display:flex;gap:16px;flex-wrap:wrap;margin:10px 4px 0;color:var(--mute);font-size:14px}
-.ov{position:fixed;inset:0;background:rgba(10,16,24,.62);display:none;align-items:center;justify-content:center;padding:14px;z-index:10}
-.ov.on{display:flex}
+.ov{position:fixed;inset:0;background:rgba(10,16,24,.62);display:flex;align-items:center;justify-content:center;padding:14px;z-index:10;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .28s ease,visibility 0s linear .28s}
+.ov.on{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .28s ease}
 .pnl{background:var(--panel);width:min(760px,100%);max-height:100%;overflow:auto;border-radius:16px;padding:16px;animation:open .28s ease-out;transform-origin:var(--ox,50%) var(--oy,50%)}
 @keyframes open{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
-@media (prefers-reduced-motion:reduce){.pnl,.obj{animation:none;transition:none}}
+@media (prefers-reduced-motion:reduce){.ov,.pnl,.obj{animation:none;transition:none}}
 .hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .hdr h2{font:700 25px "Bricolage Grotesque",sans-serif;margin:0}
 .rg{color:var(--mute);margin:2px 0 0;font-size:15px}
@@ -84,8 +84,8 @@ box-shadow:0 3px 12px #0002;cursor:pointer}
 .nv:disabled{opacity:.35;cursor:default}
 textarea{width:100%;height:240px;margin-top:10px;font:13px/1.35 ui-monospace,Menlo,monospace;background:var(--bg);color:var(--ink);border:1.5px solid var(--line);border-radius:8px;padding:8px}
 
-.pnl{background:#25292d;color:#fff;border-radius:14px;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:92vh;width:min(580px,100%);animation:pin .35s cubic-bezier(.2,.8,.2,1)}
-@keyframes pin{from{transform:translateY(26px) scale(.96);opacity:0}to{transform:none;opacity:1}}
+.pnl{background:#25292d;color:#fff;border-radius:14px;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:92vh;width:min(580px,100%);animation:pin .42s cubic-bezier(.16,1,.3,1)}
+@keyframes pin{from{transform:translateY(16px) scale(.985);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
 .ph{display:flex;align-items:center;gap:12px;padding:14px 18px;background:#1c1f22}
 .ph h2{font:700 17px "Source Sans 3",system-ui,sans-serif;margin:0;color:#fff}
 .rgm{margin-left:auto;font:13px ui-monospace,Menlo,Consolas,monospace;color:#9be36a}
@@ -268,7 +268,7 @@ if('ResizeObserver' in window){
 
 function zvb(n){const it=items.find(i=>i.t==='shelf'&&i.n===n);if(!it)return VB0.slice();const W=640,H=W/svgAspect();return[it.x+it.w/2-W/2,it.y+it.h/2-H/2,W,H]}
 function anim(to,ms,cb,delay=0){cancelAnimationFrame(af);const from=vb.slice();if(matchMedia('(prefers-reduced-motion:reduce)').matches){setVB(to);cb&&cb();return}
- const t0=performance.now()+delay,ease=x=>x<.5?16*x*x*x*x*x:1-Math.pow(-2*x+2,5)/2,step=q=>{if(q<t0){af=requestAnimationFrame(step);return}const k=Math.min(1,(q-t0)/ms),e=ease(k);setVB(from.map((v,i)=>v+(to[i]-v)*e));if(k<1)af=requestAnimationFrame(step);else cb&&cb()};af=requestAnimationFrame(step)}
+ const t0=performance.now()+delay,ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2,step=q=>{if(q<t0){af=requestAnimationFrame(step);return}const k=Math.min(1,(q-t0)/ms),e=ease(k);setVB(from.map((v,i)=>v+(to[i]-v)*e));if(k<1)af=requestAnimationFrame(step);else cb&&cb()};af=requestAnimationFrame(step)}
 
 function zoomManual(fator){
  const cx=vb[0]+vb[2]/2,cy=vb[1]+vb[3]/2;
@@ -279,7 +279,7 @@ function zoomManual(fator){
 $('#zoomIn').onclick=()=>zoomManual(.8);
 $('#zoomOut').onclick=()=>zoomManual(1.25);
 $('#mapReset').onclick=()=>anim(fitScene(),350);
-function zoomOpen(n){if(edit)return;$('#tip').style.opacity=0;anim(zvb(n),900,()=>open(n),90)}
+function zoomOpen(n){if(edit)return;$('#tip').style.opacity=0;anim(zvb(n),720,()=>open(n))}
 function open(n){cur=n;const d=D[n];setVB(zvb(n));$('#pt').textContent='Estante '+n;$('#rg').textContent=d.r;
  $('#case').innerHTML=d.s.map((s,i)=>`<button class="r${term&&norm(s).includes(term)?' hl':''}">${cluster(n*31+i)}<div class="tx"><div class="cd">Estante ${n} · ${String(i+1).padStart(2,'0')}</div><div class="tt">${esc(s)}</div></div></button>`).join('');
  $('#nt').textContent=d.s.length+' assunto(s) nesta estante';
