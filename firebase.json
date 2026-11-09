@@ -2,7 +2,17 @@
   "hosting": {
     "site": "guiabiblioteca-unef",
     "public": "public",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "index-antes-redesign.html",
+      "index-integracao-nino-teste.html",
+      "index-novo-nino.html",
+      "index.html.backup-navegacao",
+      "nino-unef-versao-correta-para-site.html",
+      "index.html.backup-antes-nino-minimapa"
+    ],
     "cleanUrls": false
   }
 }
